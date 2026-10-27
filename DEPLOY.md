@@ -55,7 +55,7 @@ Deployment through the Studio web UI has not been performed.
    alone is not treated as proof of execution success.
 4. **Runtime compatibility note.** The Studionet validator
    runtime differs from the local direct-mode GenVM in at least
-   two respects found during this project: contract storage must
+   two respects: contract storage must
    be declared with class-level annotations (assignments inside
    `__init__` alone leave the deployed instance without storage
    attributes), and sized-integer arithmetic must use the

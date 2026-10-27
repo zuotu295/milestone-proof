@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "version": "1.0.0",
-  "description": "",
+  "description": "MilestoneProof web app (Vite + genlayer-js)",
   "main": "index.js",
   "scripts": {
     "build": "vite build",

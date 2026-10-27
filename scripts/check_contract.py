@@ -86,7 +86,6 @@ def main():
         print("FAILURES: " + ", ".join(failures))
         sys.exit(1)
     print("All checks passed.")
-    print("Run genvm-lint separately on the current contract and record its actual output;")
 
 
 if __name__ == "__main__":

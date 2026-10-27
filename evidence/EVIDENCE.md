@@ -40,10 +40,10 @@ run).
 
 The demo criteria and evidence are in
 `examples/call_examples.py` and in
-`tests_integration/test_studionet.py`. The verdict is whatever
-the live validators agreed on; it was not forced by the test
-(the test asserts only that the verdict and category are in
-their closed sets).
+`tests_integration/test_studionet.py`. The test does not fix
+the verdict in advance; it checks that the verdict and category
+are in their closed sets, and the agreed verdict is recorded
+here.
 
 ## Corroborating run (same contract source)
 
@@ -60,11 +60,10 @@ also passed (168.77s):
   that run; they are not reconstructed here. The canonical run
   above is the complete record.
 
-## Failed attempts (recorded, not hidden)
+## Earlier deployment attempts
 
 Three earlier Studionet deployments failed before any verdict
-was stored. Each deployed instance is left as it is; no
-deployment was "replaced".
+was stored. Each deployed instance is left as it is.
 
 1. Instance `0x40D76fe6c86BFDE878eD6064Ff8Ef47f825E1416`
    (deploy tx

@@ -13,7 +13,6 @@
    ACCEPTED/REJECTED states, prompt-boundary sanitisation, and
    independent milestones with creation-order listing. Run:
    `.venv-repro/bin/python -m pytest tests -q`.
-   A test count is a result, not a proof of correctness.
 2. **Direct-mode smoke — `tests_direct/` (2 passed, real GenVM
    in-process, no network, no chain transaction).** Deploys the
    real contract in-process and runs creation plus evidence
@@ -58,4 +57,4 @@ Studionet configuration. It does not claim a linter result.
   far went through gltest, not Studio UI.
 - The first three Studionet deployment attempts failed before any
   verdict was stored (see `evidence/EVIDENCE.md` for the diagnosed
-  causes and the fix); they are recorded, not hidden.
+  causes and the fix).

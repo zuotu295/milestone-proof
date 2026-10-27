@@ -105,7 +105,7 @@ submission:
   and every new milestone is just another on-chain record.
   Verdicts accumulate as a permanent, auditable history per
   instance.
-- **What would grow it (not claimed as done).** Deployment
+- **Future work.** Deployment
   through the Studio web UI, a public registry of deployed
   instances, and a separate payment/escrow module that consumes
   the verdict — each is an addition to this primitive, not a
