@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MilestoneProof — freelance milestone acceptance on GenLayer</title>
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>MilestoneProof</h1>
+      <p class="tagline">Freelance milestones, accepted by validator consensus — not by argument.</p>
+      <p class="muted" id="chain-note"></p>
+    </div>
+    <button id="wallet-btn">Connect wallet</button>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>How it works</h2>
+      <ol>
+        <li>A client creates a milestone with written acceptance criteria.</li>
+        <li>The worker submits evidence that the work is done.</li>
+        <li>Anyone runs the validator assessment: independent GenLayer validators judge the evidence against the criteria and must agree exactly on the verdict and reason category.</li>
+        <li>ACCEPTED and REJECTED are terminal. NEEDS_WORK lets the worker submit fixed evidence and be re-assessed.</li>
+      </ol>
+      <p class="muted">The verdict judges the submitted evidence against the submitted criteria only. It does not verify links, run code, or move funds.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Contract</h2>
+      <form id="contract-form" class="row">
+        <input id="contract-address" placeholder="0x contract address on Stable Studionet" size="46" />
+        <button type="submit">Use contract</button>
+        <a id="explorer-link" href="#" target="_blank" rel="noreferrer">Explorer</a>
+        <button type="button" id="demo-btn">Load demo milestone</button>
+      </form>
+      <p id="tx-status" class="tx"></p>
+      <p id="error" class="error" hidden></p>
+    </section>
+
+    <section class="panel">
+      <h2>Create a milestone <span class="muted">(requires wallet)</span></h2>
+      <form id="create-form">
+        <label>Milestone ID (letters, digits, - or _)
+          <input id="f-id" required maxlength="64" placeholder="e.g. landing-page-v1" />
+        </label>
+        <label>Title
+          <input id="f-title" required maxlength="128" placeholder="e.g. Landing page" />
+        </label>
+        <label>Acceptance criteria (10–2000 chars)
+          <textarea id="f-criteria" required rows="4" placeholder="Describe exactly what counts as done."></textarea>
+        </label>
+        <button type="submit">Create milestone</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Milestones <span class="muted">(<span id="count">–</span> total)</span> <button id="refresh-btn" type="button">Refresh</button></h2>
+      <div id="milestone-list"></div>
+    </section>
+  </main>
+
+  <footer class="muted">
+    MilestoneProof runs on Stable Studionet (chain 61999) for demonstration. No real funds are involved.
+  </footer>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
