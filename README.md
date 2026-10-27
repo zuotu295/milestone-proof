@@ -89,6 +89,37 @@ The deployed address for the live demo is in
 `evidence/EVIDENCE.md`. The app works with any deployed instance:
 paste another contract address into the contract field.
 
+## Sustained use
+
+MilestoneProof is a verdict primitive, not a demo that ends at
+submission:
+
+- **Who uses it.** A freelance client and worker who want a
+  neutral acceptance record, or a small work marketplace that
+  wants acceptance disputes settled without running its own
+  arbitration desk.
+- **Why it keeps working.** The web app is static (no backend
+  server to maintain) and all state lives on-chain: any
+  marketplace frontend can point at a deployed instance by
+  pasting its contract address into the app's contract field,
+  and every new milestone is just another on-chain record.
+  Verdicts accumulate as a permanent, auditable history per
+  instance.
+- **What would grow it (not claimed as done).** Deployment
+  through the Studio web UI, a public registry of deployed
+  instances, and a separate payment/escrow module that consumes
+  the verdict — each is an addition to this primitive, not a
+  condition for using it now.
+
+On the "real or authoritative data" question: the authoritative
+inputs for a milestone dispute are the criteria and the evidence
+themselves — the parties' own documents. The contract
+deliberately does not fetch external web data, because the
+decision is about those documents, not about an outside fact.
+Evidence links inside the text are treated as claims in the
+text, not as fetched sources; see the limits in
+`MECHANISM.md`.
+
 ## Local tests
 
 ```bash

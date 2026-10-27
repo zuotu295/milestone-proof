@@ -13,15 +13,59 @@ const short = (addr) =>
 let account = null;
 let client = null;
 let contractAddress = localStorage.getItem("mp_contract") || DEFAULT_CONTRACT;
+let allMilestones = [];
+let currentFilter = "ALL";
+
+const CATEGORY_TEXT = {
+  complete: "All criteria met.",
+  partial: "Part of the work is done; gaps remain.",
+  missing_deliverable: "No deliverable shown in the evidence.",
+  off_brief: "The evidence does not match the brief.",
+  insufficient_detail: "The evidence is too vague to confirm completion.",
+  unclear: "The evidence is unclear or contradictory.",
+};
 
 function readClient() {
   return createClient({ chain: studionet });
 }
 
-function setTx(text, kind = "") {
+function setTx(text, kind = "", hash = "") {
   const el = $("tx-status");
-  el.textContent = text;
   el.className = "tx " + kind;
+  el.textContent = text;
+  if (hash) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = "Copy hash";
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(hash);
+        btn.textContent = "Copied";
+      } catch {
+        btn.textContent = hash;
+      }
+    });
+    el.appendChild(btn);
+  }
+}
+
+function renderFiltered() {
+  const list = $("milestone-list");
+  const shown =
+    currentFilter === "ALL"
+      ? allMilestones
+      : allMilestones.filter((m) => m.status === currentFilter);
+  if (shown.length === 0) {
+    list.innerHTML = "<p class='muted'>No milestones match this filter.</p>";
+    return;
+  }
+  list.innerHTML = shown.map(renderCard).join("");
+  list.querySelectorAll("[data-assess]").forEach((btn) => {
+    btn.addEventListener("click", () => onAssess(btn.dataset.assess));
+  });
+  list.querySelectorAll("[data-submit]").forEach((btn) => {
+    btn.addEventListener("click", () => onSubmit(btn.dataset.submit));
+  });
 }
 
 function showError(message) {
@@ -50,7 +94,7 @@ async function refreshList() {
       list.innerHTML = "<p class='muted'>No milestones yet. Create the first one below.</p>";
       return;
     }
-    const cards = [];
+    allMilestones = [];
     for (let i = count - 1; i >= 0; i--) {
       const id = await c.readContract({
         address: contractAddress,
@@ -62,15 +106,9 @@ async function refreshList() {
         functionName: "get_milestone",
         args: [String(id)],
       });
-      cards.push(renderCard(typeof raw === "string" ? JSON.parse(raw) : raw));
+      allMilestones.push(typeof raw === "string" ? JSON.parse(raw) : raw);
     }
-    list.innerHTML = cards.join("");
-    list.querySelectorAll("[data-assess]").forEach((btn) => {
-      btn.addEventListener("click", () => onAssess(btn.dataset.assess));
-    });
-    list.querySelectorAll("[data-submit]").forEach((btn) => {
-      btn.addEventListener("click", () => onSubmit(btn.dataset.submit));
-    });
+    renderFiltered();
   } catch (err) {
     list.innerHTML = "<p class='muted'>Could not load milestones.</p>";
     showError("Load failed: " + (err?.message || err));
@@ -98,7 +136,7 @@ function renderCard(m) {
     <p class="meta">ID <code>${escapeHtml(m.milestone_id)}</code> · owner ${short(m.owner)} · submitter ${short(m.submitter) || "—"} · evidence ×${m.evidence_count} · assessments ×${m.assessment_count}</p>
     <details><summary>Criteria</summary><p>${escapeHtml(m.criteria)}</p></details>
     ${m.evidence ? `<details open><summary>Evidence</summary><p>${escapeHtml(m.evidence)}</p></details>` : ""}
-    ${m.summary ? `<p class="summary"><strong>Assessment:</strong> ${escapeHtml(m.summary)} <em>(${escapeHtml(m.category)})</em></p>` : ""}
+    ${m.summary ? `<p class="summary"><strong>Assessment:</strong> ${escapeHtml(m.summary)}<br><span class="muted">${escapeHtml(CATEGORY_TEXT[m.category] || m.category)}</span></p>` : ""}
     ${canSubmit ? `<label>New evidence (20–4000 chars)<textarea id="ev-${escapeHtml(m.milestone_id)}" rows="3"></textarea></label>
     <button data-submit="${escapeHtml(m.milestone_id)}">Submit evidence</button>` : ""}
     ${canAssess ? `<button data-assess="${escapeHtml(m.milestone_id)}">Run validator assessment</button>` : ""}
@@ -133,14 +171,14 @@ async function send(method, args) {
     args,
     value: BigInt(0),
   });
-  setTx(`Sent: ${hash}. Waiting for validator consensus (FINALIZED)…`);
+  setTx(`Sent: ${hash}. Waiting for validator consensus (FINALIZED)…`, "", hash);
   const receipt = await c.waitForTransactionReceipt({
     hash,
     status: "FINALIZED",
     interval: 3000,
     retries: 200,
   });
-  setTx(`Finalized: ${hash}`, "ok");
+  setTx(`Finalized: ${hash}`, "ok", hash);
   return receipt;
 }
 
@@ -198,8 +236,21 @@ $("contract-form").addEventListener("submit", (ev) => {
 });
 $("create-form").addEventListener("submit", onCreate);
 $("refresh-btn").addEventListener("click", refreshList);
+document.querySelectorAll("[data-filter]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    currentFilter = btn.dataset.filter;
+    document.querySelectorAll("[data-filter]").forEach((b) => {
+      b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+    });
+    renderFiltered();
+  });
+});
 $("demo-btn").addEventListener("click", () => {
-  $("contract-address").value = contractAddress;
+  if (DEFAULT_CONTRACT) {
+    contractAddress = DEFAULT_CONTRACT;
+    localStorage.setItem("mp_contract", contractAddress);
+    $("contract-address").value = contractAddress;
+  }
   refreshList();
 });
 
