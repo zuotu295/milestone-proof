@@ -98,6 +98,27 @@ deployment was "replaced".
    applied. The class-level declaration fix in (2) is what made
    the canonical run pass.
 
+## Frontend call verification (same contract, genlayer-js)
+
+The web app's contract-call layer was verified from Node with the
+same genlayer-js calls the browser app uses
+(`createClient`, `writeContract`, `waitForTransactionReceipt`,
+`readContract`), using a throwaway generated account instead of a
+MetaMask account (script:
+`frontend/scripts/verify-frontend-call.mjs`):
+
+- Contract: `0xebe387a40ceA155205Dc27FC276a71605deaa304`
+- Create tx: `0xcb102f653086b2b3e491558ee167bf368dddc72cba7d8d0ce5ca5bd9863e8d69`,
+  receipt status 7 (FINALIZED)
+- Milestone read back: `node-verify-mvqxzc1j`, status `OPEN`,
+  owner `0x6A0C81F6e8166e7E68DacA4C5C5708fd0d69D803`
+  (throwaway account, discarded after the run)
+
+This milestone is visible in the web app's list alongside
+`studionet-demo`. Browser-side wallet writes (MetaMask) use the
+same code path with the connected account; they were not
+executed here because no personal wallet was used.
+
 ## Local results (for reference, not chain evidence)
 
 - Stand-in suite: 19 passed (`tests/`).
