@@ -3,7 +3,7 @@ import { studionet } from "genlayer-js/chains";
 import "./style.css";
 
 const DEFAULT_CONTRACT =
-  import.meta.env.VITE_CONTRACT_ADDRESS || "";
+  import.meta.env.VITE_CONTRACT_ADDRESS || "0x845AFBA77dC61cDe4049486Df09b7f06D9B6BFd0";
 const EXPLORER = "https://explorer-studio.genlayer.com";
 
 const $ = (id) => document.getElementById(id);
@@ -12,7 +12,7 @@ const short = (addr) =>
 
 let account = null;
 let client = null;
-let contractAddress = localStorage.getItem("mp_contract") || DEFAULT_CONTRACT;
+let contractAddress = localStorage.getItem("mp_contract_v2") || DEFAULT_CONTRACT;
 let allMilestones = [];
 let currentFilter = "ALL";
 
@@ -128,12 +128,15 @@ function renderCard(m) {
         : m.verdict === "REJECTED"
           ? badge("REJECTED", "bad")
           : "";
-  const canAssess = m.status === "EVIDENCE_SUBMITTED";
-  const canSubmit = m.status === "OPEN" || (m.status === "ASSESSED" && m.verdict === "NEEDS_WORK");
+  const isOwner = Boolean(account && m.owner && account.toLowerCase() === m.owner.toLowerCase());
+  const isWorker = Boolean(account && m.worker && account.toLowerCase() === m.worker.toLowerCase());
+  const canAssess = isOwner && m.status === "EVIDENCE_SUBMITTED";
+  const canSubmit = isWorker && (m.status === "OPEN" || (m.status === "ASSESSED" && m.verdict === "NEEDS_WORK"));
   return `<article class="card">
     <header><h3>${escapeHtml(m.title)}</h3>
     <span>${badge(m.status, "neutral")} ${verdict}</span></header>
-    <p class="meta">ID <code>${escapeHtml(m.milestone_id)}</code> · owner ${short(m.owner)} · submitter ${short(m.submitter) || "—"} · evidence ×${m.evidence_count} · assessments ×${m.assessment_count}</p>
+    <p class="meta">ID <code>${escapeHtml(m.milestone_id)}</code> · owner ${short(m.owner)} · worker ${escapeHtml(short(m.worker) || "—")} · submitter ${short(m.submitter) || "—"} · evidence ×${m.evidence_count} · assessments ×${m.assessment_count}</p>
+    ${!m.worker ? "<p class='error'>Legacy record: deploy the updated contract to use worker permissions.</p>" : ""}
     <details><summary>Criteria</summary><p>${escapeHtml(m.criteria)}</p></details>
     ${m.evidence ? `<details open><summary>Evidence</summary><p>${escapeHtml(m.evidence)}</p></details>` : ""}
     ${m.summary ? `<p class="summary"><strong>Assessment:</strong> ${escapeHtml(m.summary)}<br><span class="muted">${escapeHtml(CATEGORY_TEXT[m.category] || m.category)}</span></p>` : ""}
@@ -156,6 +159,7 @@ async function ensureWallet() {
     account = accounts[0];
     $("wallet-btn").textContent = "Connected: " + short(account);
   }
+  renderFiltered();
   client = createClient({ chain: studionet, account });
   await client.connect("studionet");
   return client;
@@ -178,6 +182,11 @@ async function send(method, args) {
     interval: 3000,
     retries: 200,
   });
+  const execution = receipt.consensus_data?.leader_receipt?.[0]?.execution_result
+    ?? receipt.txExecutionResultName;
+  if (execution !== "SUCCESS") {
+    throw new Error(`Transaction finalized but execution failed (${execution || "unknown result"}). Hash: ${hash}`);
+  }
   setTx(`Finalized: ${hash}`, "ok", hash);
   return receipt;
 }
@@ -189,7 +198,11 @@ async function onCreate(ev) {
   const title = $("f-title").value.trim();
   const criteria = $("f-criteria").value.trim();
   try {
-    await send("create_milestone", [id, title, criteria]);
+    const worker = $("f-worker").value.trim();
+    if (!/^0x[0-9a-fA-F]{40}$/.test(worker) || /^0x0{40}$/i.test(worker)) {
+      throw new Error("Enter a valid, nonzero worker wallet address.");
+    }
+    await send("create_milestone", [id, title, criteria, worker]);
     await refreshList();
   } catch (err) {
     setTx("", "");
@@ -230,7 +243,7 @@ $("wallet-btn").addEventListener("click", async () => {
 $("contract-form").addEventListener("submit", (ev) => {
   ev.preventDefault();
   contractAddress = $("contract-address").value.trim();
-  localStorage.setItem("mp_contract", contractAddress);
+  localStorage.setItem("mp_contract_v2", contractAddress);
   $("explorer-link").href = EXPLORER;
   refreshList();
 });
@@ -248,7 +261,7 @@ document.querySelectorAll("[data-filter]").forEach((btn) => {
 $("demo-btn").addEventListener("click", () => {
   if (DEFAULT_CONTRACT) {
     contractAddress = DEFAULT_CONTRACT;
-    localStorage.setItem("mp_contract", contractAddress);
+    localStorage.setItem("mp_contract_v2", contractAddress);
     $("contract-address").value = contractAddress;
   }
   refreshList();
@@ -258,3 +271,10 @@ $("contract-address").value = contractAddress;
 $("explorer-link").href = EXPLORER;
 $("chain-note").textContent = "Stable Studionet · Chain ID 61999 · test network only, no real funds";
 refreshList();
+
+window.ethereum?.on?.("accountsChanged", (accounts) => {
+  account = accounts[0] || null;
+  client = null;
+  $("wallet-btn").textContent = account ? "Connected: " + short(account) : "Connect wallet";
+  renderFiltered();
+});
