@@ -1,0 +1,34 @@
+{
+  "sourceSha256": "206df19f55449ecad052b8b800fdadd46b4fe75c66b647083c07fc122501b903",
+  "sourceTests": {
+    "passed": 38,
+    "command": "python3 -m pytest tests -q"
+  },
+  "directSdkTests": {
+    "passed": 4,
+    "command": "python3 -m pytest tests_direct -q"
+  },
+  "officialLint": {
+    "passed": true,
+    "publicMethods": 7,
+    "command": "genvm-lint check contracts/milestone_proof.py"
+  },
+  "offlineStaticCheck": {
+    "passed": true,
+    "command": "python3 scripts/check_contract.py"
+  },
+  "frontendBuild": {
+    "passed": true,
+    "command": "npm run build --prefix frontend"
+  },
+  "frontendRoleVisibility": {
+    "passed": 11,
+    "method": "Node VM execution of frontend renderCard with owner, worker, unrelated, disconnected, revision and terminal cases"
+  },
+  "versions": {
+    "pytest": "9.2.0",
+    "genvm-linter": "0.11.0",
+    "genlayer-test": "0.29.2",
+    "genlayer-py": "0.16.3"
+  }
+}

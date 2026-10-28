@@ -1,0 +1,163 @@
+{
+  "chainId": 61999,
+  "sourceSha256": "206df19f55449ecad052b8b800fdadd46b4fe75c66b647083c07fc122501b903",
+  "owner": "0x330712162C3001cB554f3E0974baAf8Cf62Ef1b1",
+  "worker": "0x0Eb79BE1067dCA801eE0deB2d01b99ea752FbD13",
+  "outsider": "0xBd8C01eF09c9805DE9922685E05aF12E460cBA35",
+  "steps": [
+    {
+      "label": "deploy",
+      "hash": "0xae9429454a32ef7a297821d44d096cb9ad44871321e3ca442dcdbb30a61ba85e",
+      "status": 7,
+      "executionResult": "SUCCESS",
+      "returnData": {
+        "status": "return",
+        "payload": {
+          "readable": "null"
+        }
+      }
+    },
+    {
+      "label": "create",
+      "hash": "0x146b13915a3394bbc91b385d10db19a1912a8a673e1cc31652b44dd45e3c75f9",
+      "status": 7,
+      "executionResult": "SUCCESS",
+      "returnData": {
+        "status": "return",
+        "payload": {
+          "readable": "\"{\\\"assessment_count\\\": 0, \\\"category\\\": \\\"\\\", \\\"criteria\\\": \\\"Deliver a landing page with a headline, a signup form that stores submissions, and a mobile layout without overflow at 320px.\\\", \\\"evidence\\\": \\\"\\\", \\\"evidence_count\\\": 0, \\\"milestone_id\\\": \\\"permissions-demo\\\", \\\"owner\\\": \\\"0x330712162c3001cb554f3e0974baaf8cf62ef1b1\\\", \\\"status\\\": \\\"OPEN\\\", \\\"submitter\\\": \\\"\\\", \\\"summary\\\": \\\"\\\", \\\"title\\\": \\\"Landing page\\\", \\\"verdict\\\": \\\"\\\", \\\"worker\\\": \\\"0x0eb79be1067dca801ee0deb2d01b99ea752fbd13\\\"}\""
+        }
+      }
+    },
+    {
+      "label": "outsider-cannot-submit",
+      "hash": "0xc9ebc1e8b682e793381175e29bb8a2e83b2a5488589a8c633d6323c7cfdc27da",
+      "status": 7,
+      "executionResult": "ERROR",
+      "returnData": {
+        "status": "rollback",
+        "payload": "UNAUTHORIZED: only the designated worker may submit or revise evidence"
+      }
+    },
+    {
+      "label": "worker-submit",
+      "hash": "0x9723e88ce49704f19f7a6dd8dc188ee2c303b1a876711b610a67b4175dce77e3",
+      "status": 7,
+      "executionResult": "SUCCESS",
+      "returnData": {
+        "status": "return",
+        "payload": {
+          "readable": "\"{\\\"assessment_count\\\": 0, \\\"category\\\": \\\"\\\", \\\"criteria\\\": \\\"Deliver a landing page with a headline, a signup form that stores submissions, and a mobile layout without overflow at 320px.\\\", \\\"evidence\\\": \\\"Delivered the headline and working signup form with database storage. The mobile layout currently overflows at 320px and the remaining mobile layout fix will be delivered in the next revision.\\\", \\\"evidence_count\\\": 1, \\\"milestone_id\\\": \\\"permissions-demo\\\", \\\"owner\\\": \\\"0x330712162c3001cb554f3e0974baaf8cf62ef1b1\\\", \\\"status\\\": \\\"EVIDENCE_SUBMITTED\\\", \\\"submitter\\\": \\\"0x0eb79be1067dca801ee0deb2d01b99ea752fbd13\\\", \\\"summary\\\": \\\"\\\", \\\"title\\\": \\\"Landing page\\\", \\\"verdict\\\": \\\"\\\", \\\"worker\\\": \\\"0x0eb79be1067dca801ee0deb2d01b99ea752fbd13\\\"}\""
+        }
+      }
+    },
+    {
+      "label": "outsider-cannot-assess",
+      "hash": "0xaa5e1735b8f42665a4fe3bd134d43a34954ff04223d3d53fe2125bdb47602838",
+      "status": 7,
+      "executionResult": "ERROR",
+      "returnData": {
+        "status": "rollback",
+        "payload": "UNAUTHORIZED: only the milestone owner may request assessment"
+      }
+    },
+    {
+      "label": "worker-cannot-assess",
+      "hash": "0x6e03dc9ee64b35dc75ea460630fb5c587df2ca0bb88b27969a5540f5fe80775a",
+      "status": 7,
+      "executionResult": "ERROR",
+      "returnData": {
+        "status": "rollback",
+        "payload": "UNAUTHORIZED: only the milestone owner may request assessment"
+      }
+    },
+    {
+      "label": "owner-assess-partial",
+      "hash": "0x80123edae2dc1cd10e70904f68f3e762e8378b4f06046726782824ade5ab4e74",
+      "status": 7,
+      "executionResult": "SUCCESS",
+      "returnData": {
+        "status": "return",
+        "payload": {
+          "readable": "\"{\\\"assessment_count\\\": 1, \\\"category\\\": \\\"partial\\\", \\\"criteria\\\": \\\"Deliver a landing page with a headline, a signup form that stores submissions, and a mobile layout without overflow at 320px.\\\", \\\"evidence\\\": \\\"Delivered the headline and working signup form with database storage. The mobile layout currently overflows at 320px and the remaining mobile layout fix will be delivered in the next revision.\\\", \\\"evidence_count\\\": 1, \\\"milestone_id\\\": \\\"permissions-demo\\\", \\\"owner\\\": \\\"0x330712162c3001cb554f3e0974baaf8cf62ef1b1\\\", \\\"status\\\": \\\"ASSESSED\\\", \\\"submitter\\\": \\\"0x0eb79be1067dca801ee0deb2d01b99ea752fbd13\\\", \\\"summary\\\": \\\"Headline and signup form with database storage are complete, but the 320px mobile overflow issue is unresolved and explicitly acknowledged as pending.\\\", \\\"title\\\": \\\"Landing page\\\", \\\"verdict\\\": \\\"NEEDS_WORK\\\", \\\"worker\\\": \\\"0x0eb79be1067dca801ee0deb2d01b99ea752fbd13\\\"}\""
+        }
+      }
+    },
+    {
+      "label": "outsider-cannot-revise",
+      "hash": "0x8019b68caa5535c2992ed559aa5d0d37a940a3b14720e2c603eb25169cdc1e3e",
+      "status": 7,
+      "executionResult": "ERROR",
+      "returnData": {
+        "status": "rollback",
+        "payload": "UNAUTHORIZED: only the designated worker may submit or revise evidence"
+      }
+    },
+    {
+      "label": "owner-cannot-revise",
+      "hash": "0xc0e1c2cc518508a49c84736c18927e6fec6decf1f5794f9261361ba14df37184",
+      "status": 7,
+      "executionResult": "ERROR",
+      "returnData": {
+        "status": "rollback",
+        "payload": "UNAUTHORIZED: only the designated worker may submit or revise evidence"
+      }
+    },
+    {
+      "label": "worker-revise",
+      "hash": "0xf80da169f470c010563f5e0424ede3d7f0a33794efec5376674fec1ecf884b30",
+      "status": 7,
+      "executionResult": "SUCCESS",
+      "returnData": {
+        "status": "return",
+        "payload": {
+          "readable": "\"{\\\"assessment_count\\\": 1, \\\"category\\\": \\\"\\\", \\\"criteria\\\": \\\"Deliver a landing page with a headline, a signup form that stores submissions, and a mobile layout without overflow at 320px.\\\", \\\"evidence\\\": \\\"Delivered the headline, working signup form and database storage. Fixed the mobile CSS and verified the layout at 320px, 360px and 768px: no overflow and the signup form stores test submissions successfully.\\\", \\\"evidence_count\\\": 2, \\\"milestone_id\\\": \\\"permissions-demo\\\", \\\"owner\\\": \\\"0x330712162c3001cb554f3e0974baaf8cf62ef1b1\\\", \\\"status\\\": \\\"EVIDENCE_SUBMITTED\\\", \\\"submitter\\\": \\\"0x0eb79be1067dca801ee0deb2d01b99ea752fbd13\\\", \\\"summary\\\": \\\"\\\", \\\"title\\\": \\\"Landing page\\\", \\\"verdict\\\": \\\"\\\", \\\"worker\\\": \\\"0x0eb79be1067dca801ee0deb2d01b99ea752fbd13\\\"}\""
+        }
+      }
+    },
+    {
+      "label": "owner-assess-final",
+      "hash": "0xd73acf914c3431b67742c5551db999e13f21d8b4a3a6bc9379215b3eb935a460",
+      "status": 7,
+      "executionResult": "SUCCESS",
+      "returnData": {
+        "status": "return",
+        "payload": {
+          "readable": "\"{\\\"assessment_count\\\": 2, \\\"category\\\": \\\"complete\\\", \\\"criteria\\\": \\\"Deliver a landing page with a headline, a signup form that stores submissions, and a mobile layout without overflow at 320px.\\\", \\\"evidence\\\": \\\"Delivered the headline, working signup form and database storage. Fixed the mobile CSS and verified the layout at 320px, 360px and 768px: no overflow and the signup form stores test submissions successfully.\\\", \\\"evidence_count\\\": 2, \\\"milestone_id\\\": \\\"permissions-demo\\\", \\\"owner\\\": \\\"0x330712162c3001cb554f3e0974baaf8cf62ef1b1\\\", \\\"status\\\": \\\"ASSESSED\\\", \\\"submitter\\\": \\\"0x0eb79be1067dca801ee0deb2d01b99ea752fbd13\\\", \\\"summary\\\": \\\"All three criteria are met: headline delivered, signup form stores submissions, and mobile layout verified at 320px with no overflow.\\\", \\\"title\\\": \\\"Landing page\\\", \\\"verdict\\\": \\\"ACCEPTED\\\", \\\"worker\\\": \\\"0x0eb79be1067dca801ee0deb2d01b99ea752fbd13\\\"}\""
+        }
+      }
+    }
+  ],
+  "contractAddress": "0x845AFBA77dC61cDe4049486Df09b7f06D9B6BFd0",
+  "partialRecord": {
+    "assessment_count": 1,
+    "category": "partial",
+    "criteria": "Deliver a landing page with a headline, a signup form that stores submissions, and a mobile layout without overflow at 320px.",
+    "evidence": "Delivered the headline and working signup form with database storage. The mobile layout currently overflows at 320px and the remaining mobile layout fix will be delivered in the next revision.",
+    "evidence_count": 1,
+    "milestone_id": "permissions-demo",
+    "owner": "0x330712162c3001cb554f3e0974baaf8cf62ef1b1",
+    "status": "ASSESSED",
+    "submitter": "0x0eb79be1067dca801ee0deb2d01b99ea752fbd13",
+    "summary": "Headline and signup form with database storage are complete, but the 320px mobile overflow issue is unresolved and explicitly acknowledged as pending.",
+    "title": "Landing page",
+    "verdict": "NEEDS_WORK",
+    "worker": "0x0eb79be1067dca801ee0deb2d01b99ea752fbd13"
+  },
+  "finalRecord": {
+    "assessment_count": 2,
+    "category": "complete",
+    "criteria": "Deliver a landing page with a headline, a signup form that stores submissions, and a mobile layout without overflow at 320px.",
+    "evidence": "Delivered the headline, working signup form and database storage. Fixed the mobile CSS and verified the layout at 320px, 360px and 768px: no overflow and the signup form stores test submissions successfully.",
+    "evidence_count": 2,
+    "milestone_id": "permissions-demo",
+    "owner": "0x330712162c3001cb554f3e0974baaf8cf62ef1b1",
+    "status": "ASSESSED",
+    "submitter": "0x0eb79be1067dca801ee0deb2d01b99ea752fbd13",
+    "summary": "All three criteria are met: headline delivered, signup form stores submissions, and mobile layout verified at 320px with no overflow.",
+    "title": "Landing page",
+    "verdict": "ACCEPTED",
+    "worker": "0x0eb79be1067dca801ee0deb2d01b99ea752fbd13"
+  },
+  "verified": true
+}

@@ -1,5 +1,12 @@
 # Evidence
 
+Current access-control verification: see [ACCESS_CONTROL.md](ACCESS_CONTROL.md).
+
+The transactions below are historical and predate worker binding and
+owner-only assessment. They must not be used as proof of the updated
+permissions. Current live-run status is recorded in `permissions-flow.json`;
+only a run with `verified: true` is complete.
+
 All transactions below are on Stable Studionet (chain ID 61999).
 A transaction counts as successful only when its receipt reached
 FINALIZED (status code 7), `tx_execution_succeeded` passed, and
@@ -8,13 +15,12 @@ receipt alone is not treated as proof of execution success.
 Callers were gltest auto-generated Studionet test accounts, not
 a personal wallet. No Appeal was invoked in any run.
 
-## Canonical run (current contract)
+## Historical run (before access control)
 
 Contract source SHA-256:
 `f3008be9e65005a32e84f30a5fb17822577354773f14651ab13b6c5027eda511`
-(file `contracts/milestone_proof.py`, after the fixes in
-"Failed attempts" below; the file has not changed since this
-run).
+(previous version of `contracts/milestone_proof.py`; this hash does not
+match the access-control revision).
 
 | Step | Transaction hash | Status |
 |---|---|---|
