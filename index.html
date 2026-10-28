@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MilestoneProof — freelance milestone acceptance on GenLayer</title>
-  <script type="module" crossorigin src="./assets/index-MW6Ns1_t.js"></script>
+  <script type="module" crossorigin src="./assets/index-BKEWauQr.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-CSXORJS_.css">
 </head>
 <body>
@@ -23,9 +23,9 @@
     <section class="panel">
       <h2>How it works</h2>
       <div class="steps">
-        <div class="step"><span class="step-num">1</span><p>A client creates a milestone with written acceptance criteria.</p></div>
+        <div class="step"><span class="step-num">1</span><p>A client creates a milestone with written acceptance criteria and a fixed worker wallet address.</p></div>
         <div class="step"><span class="step-num">2</span><p>The worker submits evidence that the work is done.</p></div>
-        <div class="step"><span class="step-num">3</span><p>Anyone runs the validator assessment: independent GenLayer validators judge the evidence against the criteria and must agree exactly on the verdict and reason category.</p></div>
+        <div class="step"><span class="step-num">3</span><p>The milestone owner runs the validator assessment: independent GenLayer validators judge the evidence against the criteria and must agree exactly on the verdict and reason category.</p></div>
         <div class="step"><span class="step-num">4</span><p>ACCEPTED and REJECTED are terminal. NEEDS_WORK lets the worker submit fixed evidence and be re-assessed.</p></div>
       </div>
       <p class="muted">The verdict judges the submitted evidence against the submitted criteria only. It does not verify links, run code, or move funds.</p>
@@ -51,6 +51,9 @@
         </label>
         <label>Title
           <input id="f-title" required maxlength="128" placeholder="e.g. Landing page" />
+        </label>
+        <label>Designated worker wallet address
+          <input id="f-worker" required pattern="0x[0-9a-fA-F]{40}" maxlength="42" placeholder="0x worker wallet address" />
         </label>
         <label>Acceptance criteria (10–2000 chars)
           <textarea id="f-criteria" required rows="4" placeholder="Describe exactly what counts as done."></textarea>
