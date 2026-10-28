@@ -103,9 +103,10 @@ npm install
 VITE_CONTRACT_ADDRESS=0xYourDeployedContract npm run build
 ```
 
-The `Contract checks and Pages` workflow tests the contract, builds
-`frontend/dist/`, and deploys it with the official GitHub Pages actions.
-Set Settings → Pages → Build and deployment → Source to **GitHub Actions**.
+The `Contract and frontend checks` workflow tests the contract and builds
+`frontend/dist/`. Publish the `dist/` contents to the existing `gh-pages`
+branch. Settings → Pages → Build and deployment → Source remains
+**Deploy from a branch**, with `gh-pages` and `/ (root)` selected.
 GitHub Pages serves it at
 `https://zuotu295.github.io/milestone-proof/`. The app also
 accepts any contract address typed into its contract field, so it
