@@ -4,7 +4,7 @@
 A client (the milestone owner) publishes acceptance criteria for a
 piece of freelance work. A worker submits evidence that the work is
 done: a description of what was delivered, links, or test results.
-Anyone can then trigger an assessment, and a group of GenLayer
+Only the client can then trigger an assessment, and a group of GenLayer
 validators independently judges whether the evidence satisfies the
 criteria. The verdict becomes shared on-chain state that both sides
 can rely on instead of arguing over chat messages.
@@ -108,6 +108,17 @@ def _validate_milestone_id(milestone_id):
     return milestone_id
 
 
+def _validate_worker(worker):
+    if not isinstance(worker, str) or len(worker) != 42 or not worker.startswith("0x"):
+        _fail("INVALID_WORKER", "worker must be a 20-byte 0x address")
+    if any(ch not in "0123456789abcdefABCDEF" for ch in worker[2:]):
+        _fail("INVALID_WORKER", "worker must be a hexadecimal address")
+    worker = worker.lower()
+    if worker == "0x" + "0" * 40:
+        _fail("INVALID_WORKER", "worker cannot be the zero address")
+    return worker
+
+
 def _sanitize_prompt_text(text):
     """Remove forged prompt-boundary markers from user-supplied text.
 
@@ -205,7 +216,8 @@ class MilestoneProof(gl.Contract):
         return json.dumps(record, sort_keys=True)
 
     @gl.public.write
-    def create_milestone(self, milestone_id, title, criteria) -> str:
+    def create_milestone(self, milestone_id, title, criteria, worker) -> str:
+        worker = _validate_worker(worker)
         _validate_milestone_id(milestone_id)
         _validate_text(title, "title", 1, MAX_TITLE_CHARS)
         _validate_text(criteria, "criteria", MIN_CRITERIA_CHARS, MAX_CRITERIA_CHARS)
@@ -215,7 +227,8 @@ class MilestoneProof(gl.Contract):
             "milestone_id": milestone_id,
             "title": title,
             "criteria": criteria,
-            "owner": str(gl.message.sender_address),
+            "owner": str(gl.message.sender_address).lower(),
+            "worker": worker,
             "submitter": "",
             "evidence": "",
             "evidence_count": 0,
@@ -239,12 +252,14 @@ class MilestoneProof(gl.Contract):
     def submit_evidence(self, milestone_id, evidence) -> str:
         _validate_text(evidence, "evidence", MIN_EVIDENCE_CHARS, MAX_EVIDENCE_CHARS)
         record = self._load(milestone_id)
+        if str(gl.message.sender_address).lower() != record["worker"]:
+            _fail("UNAUTHORIZED", "only the designated worker may submit or revise evidence")
         if record["status"] == "ASSESSED" and record["verdict"] != "NEEDS_WORK":
             _fail("INVALID_STATUS", "milestone is terminal; create a new one")
         if record["status"] not in ("OPEN", "ASSESSED"):
             _fail("INVALID_STATUS", "evidence cannot be submitted now")
         record["evidence"] = evidence
-        record["submitter"] = str(gl.message.sender_address)
+        record["submitter"] = str(gl.message.sender_address).lower()
         record["evidence_count"] += 1
         record["status"] = "EVIDENCE_SUBMITTED"
         record["verdict"] = ""
@@ -255,6 +270,8 @@ class MilestoneProof(gl.Contract):
     @gl.public.write
     def assess_milestone(self, milestone_id) -> str:
         record = self._load(milestone_id)
+        if str(gl.message.sender_address).lower() != record["owner"]:
+            _fail("UNAUTHORIZED", "only the milestone owner may request assessment")
         if record["status"] != "EVIDENCE_SUBMITTED":
             _fail("INVALID_STATUS", "no submitted evidence to assess")
         criteria = _sanitize_prompt_text(record["criteria"])
