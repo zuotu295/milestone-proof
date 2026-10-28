@@ -92,7 +92,7 @@ def _load_contract_module():
     gl = types.SimpleNamespace()
     gl.Contract = object
     gl.public = _Public()
-    gl.message = types.SimpleNamespace(sender_address="0xOwner")
+    gl.message = types.SimpleNamespace(sender_address="0x" + "11" * 20)
     gl.nondet = types.SimpleNamespace()
     gl.vm = types.SimpleNamespace(
         Return=_Return,
@@ -136,7 +136,7 @@ class Env:
         self.stub = stub
         self.state = state
 
-    def new(self, sender="0xOwner"):
+    def new(self, sender="0x" + "11" * 20):
         self.stub.gl.message.sender_address = sender
         self.state["queue"] = []
         self.state["last"] = {}
