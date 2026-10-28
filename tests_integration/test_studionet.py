@@ -59,7 +59,7 @@ def _receipt_info(receipt):
     return info
 
 
-def test_studionet_full_flow():
+def test_studionet_full_flow(default_account):
     factory = get_contract_factory(contract_file_path="milestone_proof.py")
     deploy_receipt = factory.deploy_contract_tx(
         wait_transaction_status=TransactionStatus.FINALIZED,
@@ -74,7 +74,7 @@ def test_studionet_full_flow():
     }, sort_keys=True))
 
     create_receipt = contract.create_milestone(
-        args=["studionet-demo", "Landing page", CRITERIA]
+        args=["studionet-demo", "Landing page", CRITERIA, default_account.address]
     ).transact(wait_transaction_status=TransactionStatus.FINALIZED)
     assert tx_execution_succeeded(create_receipt), create_receipt
     print("EVIDENCE_MILESTONE_CREATE " + json.dumps({
