@@ -36,6 +36,7 @@ const hash = await client.writeContract({
     id,
     "Node verification milestone",
     "Deliver a one-page summary of this verification run in plain text.",
+    account.address,
   ],
   value: BigInt(0),
 });
