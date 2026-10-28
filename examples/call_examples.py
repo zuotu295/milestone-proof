@@ -15,6 +15,8 @@ here.
 
 import json
 
+WORKER = "0x" + "ab" * 20  # Replace with the intended worker wallet before calling.
+
 CRITERIA = (
     "Deliver a landing page with a headline, a signup form that "
     "stores submissions, and a mobile layout that does not break "
@@ -30,10 +32,10 @@ EVIDENCE = (
 
 def main():
     print("create_milestone:")
-    print(json.dumps(["demo-landing-page", "Landing page", CRITERIA], indent=2))
-    print("submit_evidence:")
+    print(json.dumps(["demo-landing-page", "Landing page", CRITERIA, WORKER], indent=2))
+    print("submit_evidence (sign with the designated worker):")
     print(json.dumps(["demo-landing-page", EVIDENCE], indent=2))
-    print("assess_milestone:")
+    print("assess_milestone (sign with the milestone owner):")
     print(json.dumps(["demo-landing-page"], indent=2))
 
 
