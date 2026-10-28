@@ -1,4 +1,4 @@
-name: Contract checks and Pages
+name: Contract and frontend checks
 on:
   push:
   pull_request:
@@ -33,21 +33,3 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
       - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        with:
-          path: frontend/dist
-  deploy:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    needs: [source-tests, frontend]
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy verified frontend
-        id: deployment
-        uses: actions/deploy-pages@v4
