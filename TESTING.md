@@ -2,7 +2,7 @@
 
 ## Layers
 
-1. **Stand-in suite — `tests/` (19 passed).** Loads
+1. **Stand-in suite — `tests/` (38 passed).** Loads
    `contracts/milestone_proof.py` itself behind a small GenLayer
    stand-in (`tests/conftest.py`), so it exercises the deployable
    file, not a copy of its logic. Covers milestone creation and
@@ -11,15 +11,21 @@
    verdict and category disagreement (nothing written), malformed
    output (nothing written), NEEDS_WORK resubmission, terminal
    ACCEPTED/REJECTED states, prompt-boundary sanitisation, and
-   independent milestones with creation-order listing. Run:
+   independent milestones with creation-order listing. Authorization tests cover
+   owner/outsider submission and revision rejection, worker/outsider assessment
+   rejection for ACCEPTED/REJECTED/NEEDS_WORK responses, unchanged serialized
+   storage, no LLM invocation on denied assessment, invalid worker rejection,
+   address normalization and cross-milestone isolation. Run:
    `.venv-repro/bin/python -m pytest tests -q`.
-2. **Direct-mode smoke — `tests_direct/` (2 passed, real GenVM
+2. **Direct-mode smoke — `tests_direct/` (4 passed, real GenLayer SDK
    in-process, no network, no chain transaction).** Deploys the
    real contract in-process and runs creation plus evidence
-   submission, including the creation-order index. Run:
+   submission, including the creation-order index, denied submission and
+   assessment by separate accounts, and NEEDS_WORK revision permissions.
+   This executes the real SDK in-process; LLM replies are mocked in this layer. Run:
    `.venv-repro/bin/python -m pytest tests_direct -q`.
    The two suites are run separately: the stand-in replaces the
-   `genlayer` module in-process, which the real GenVM fixtures
+   `genlayer` module in-process, which the real GenLayer SDK fixtures
    cannot share in one process.
 3. **Studionet integration — `tests_integration/` (live
    validators, FINALIZED).** Run only with:
@@ -58,3 +64,31 @@ Studionet configuration. It does not claim a linter result.
 - The first three Studionet deployment attempts failed before any
   verdict was stored (see `evidence/EVIDENCE.md` for the diagnosed
   causes and the fix).
+
+## Reusing the official artifact for direct tests
+
+If gltest-direct reports HTTP 404 for the universal GenVM release asset,
+first run the official linter, then copy the artifact it downloaded:
+
+```bash
+mkdir -p ~/.cache/gltest-direct
+cp ~/.cache/genvm-linter/genvm-universal-v0.3.0-rc7.tar.xz ~/.cache/gltest-direct/
+python3 -m pytest tests_direct -q
+```
+
+## Three-account live authorization flow
+
+```bash
+cd frontend
+npm ci
+node ../scripts/verify-permissions.mjs
+```
+
+The script requires chain ID 61999 and a zero gas price before every
+transaction. It generates three disposable test accounts in memory, deploys
+exactly the repository source, and records only public addresses, source hash,
+transaction hashes and outcomes in `evidence/permissions-flow.json`.
+It checks failed unauthorized transactions and unchanged records, then the
+worker's submission/revision and the owner's live-validator assessments.
+`verified: true` is written only after the entire flow passes. Interrupted or
+failed runs retain their actual status and are not successful evidence.

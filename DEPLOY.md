@@ -40,8 +40,8 @@ Deployment through the Studio web UI has not been performed.
 2. **Direct-mode tests.** With the reproducible environment
    (`requirements.lock.txt`: genlayer-test 0.29.2, genlayer-py
    0.16.3, genvm-linter 0.11.0, pytest 9.1.1, Python 3.12.3),
-   run `tests_direct/test_direct_smoke.py` with real GenVM
-   in-process: 2 passed, covering deploy, empty views, creation,
+   run `tests_direct/test_direct_smoke.py` with real GenLayer SDK
+   in-process: 4 passed, covering deploy, empty views, creation,
    evidence submission, and the creation-order index.
 3. **Integration test on Studionet.**
    ```bash
@@ -77,8 +77,9 @@ Deployment through the Studio web UI has not been performed.
 2. Create a new contract, paste the full contents of
    `contracts/milestone_proof.py` (including the first-line
    dependency comment), and deploy with no constructor arguments.
-3. Call `create_milestone`, then `submit_evidence`, then
-   `assess_milestone` with the demo values from
+3. Call `create_milestone(id, title, criteria, worker)` as the client.
+   Switch to the designated worker to call `submit_evidence`; switch back
+   to the client to call `assess_milestone`. Use the demo values from
    `examples/call_examples.py`. Record the contract address,
    transaction hashes, and the agreed verdict as the live result;
    do not edit a live result to match a local expectation.
@@ -86,6 +87,13 @@ Deployment through the Studio web UI has not been performed.
    the returned record.
 5. Record the contract address and deployment transaction in a
    deployment note (a new file, not by editing the contract).
+
+## Updated contract addresses
+
+Existing instances are immutable and retain their old permission rules.
+Deploy this version to a new address; do not reuse a historical demo address.
+Set the new address as `VITE_CONTRACT_ADDRESS` and replace the contract
+address in the project submission evidence.
 
 ## Frontend deployment (GitHub Pages)
 
@@ -95,7 +103,9 @@ npm install
 VITE_CONTRACT_ADDRESS=0xYourDeployedContract npm run build
 ```
 
-The `dist/` output is published to the `gh-pages` branch, and
+The `Contract checks and Pages` workflow tests the contract, builds
+`frontend/dist/`, and deploys it with the official GitHub Pages actions.
+Set Settings → Pages → Build and deployment → Source to **GitHub Actions**.
 GitHub Pages serves it at
 `https://zuotu295.github.io/milestone-proof/`. The app also
 accepts any contract address typed into its contract field, so it

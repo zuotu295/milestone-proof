@@ -23,13 +23,14 @@ OPEN -> EVIDENCE_SUBMITTED -> ASSESSED
 ```
 
 - `create_milestone` (anyone) records the criteria and the creator
-  as owner. Milestone ids are unique per instance.
-- `submit_evidence` (anyone) records evidence and the submitter.
+  as owner, and requires a valid nonzero `worker` address. Both roles are
+  immutable. Milestone ids are unique per instance.
+- `submit_evidence` (designated worker only) records evidence and the submitter.
   It is allowed from `OPEN`, and from `ASSESSED` only when the
   stored verdict is `NEEDS_WORK`, in which case the verdict fields
   are cleared and the milestone returns to `EVIDENCE_SUBMITTED`.
   `ACCEPTED` and `REJECTED` are terminal.
-- `assess_milestone` (anyone) runs the validator assessment and
+- `assess_milestone` (owner only) runs the validator assessment and
   stores the agreed verdict. It requires `EVIDENCE_SUBMITTED`.
 - Views: `get_milestone` returns the record or `""`,
   `get_status` returns the status or `NOT_FOUND`,
@@ -47,6 +48,9 @@ Input bounds are enforced before any assessment:
 | Title | 1–128 chars |
 | Criteria | 10–2000 chars |
 | Evidence | 20–4000 chars |
+| Worker address | 0x + 40 hex digits, nonzero, normalized to lowercase |
+| Evidence caller | designated worker only, including revisions |
+| Assessment caller | owner only, before any LLM execution |
 | Duplicate id | rejected (`MILESTONE_EXISTS`) |
 | Wrong state | rejected (`INVALID_STATUS`) |
 
@@ -116,6 +120,8 @@ are captured as local variables first.
 | `INVALID_INPUT` | empty or out-of-bounds title, criteria, or evidence |
 | `MILESTONE_EXISTS` | milestone id already used |
 | `NOT_FOUND` | milestone does not exist |
+| `UNAUTHORIZED` | caller is not the designated worker (submission) or owner (assessment) |
+| `INVALID_WORKER` | malformed or zero worker address |
 | `INVALID_STATUS` | transition not allowed from the current status |
 | `LLM_ERROR` | LLM output could not be parsed or validated (leader-side) |
 | `CONSENSUS_RESULT_INVALID` | consensus result could not be parsed after agreement (defensive) |

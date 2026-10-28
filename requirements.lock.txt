@@ -1,4 +1,4 @@
-# ApiCompat reproducible environment lock file.
+# MilestoneProof validation environment lock file.
 #
 # Generated from an actually installed environment, not from a guess:
 #   python3 -m venv .venv-repro
@@ -14,7 +14,7 @@
 #   python3 -m venv .venv-clean
 #   .venv-clean/bin/pip install -r requirements.lock.txt
 #   .venv-clean/bin/python -m pytest tests -q
-#   .venv-clean/bin/genvm-lint check contracts/api_compat.py
+#   .venv-clean/bin/genvm-lint check contracts/milestone_proof.py
 #
 # Notes:
 # - This lock file covers the local validation environment only.
@@ -66,7 +66,7 @@ pycryptodome==3.24.1
 pydantic==2.14.1
 pydantic_core==2.50.1
 pyright==1.1.414
-pytest==9.1.1
+pytest==9.2.0
 python-dotenv==1.2.4
 pyunormalize==18.0.0
 regex==2026.9.29
